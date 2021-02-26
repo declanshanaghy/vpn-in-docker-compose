@@ -51,7 +51,6 @@ services:
       - "9102:9102"  # Stockwatcher chromedriver debugging
       - "9103:9103"  # Stockwatcher chromedriver debugging
       - "9104:9104"  # Stockwatcher chromedriver debugging
-      - "9143:443"   # Nginx TLS test port
       - "9180:80"    # Nginx test port
     networks:
       - protected
@@ -109,6 +108,8 @@ services:
       - -c
       - |
         /apply-firewall.sh initial
+        echo ip route add 192.168.1.0/24 dev eth0
+        ip route add 192.168.1.0/24 dev eth0
         while true; do
           /apply-firewall.sh
           sleep 1s
@@ -146,7 +147,7 @@ services:
       IPTABLES_FILE_V6: /iptables/iptables-v6.txt
       ALLOWED_IPS_FILE: /cache/all.txt
       ALLOWED_IPS_DIR: /cache
-      LOCAL_IPS: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8
+      LOCAL_IPS: 192.168.1.0/24
       STATUS_IP: 139.130.4.5
       NS: 8.8.4.4
     volumes:
