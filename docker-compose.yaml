@@ -124,8 +124,8 @@ services:
     stop_signal: SIGKILL
     network_mode: service:network  # CRITICALLY IMPORTANT!
 
-  # Generates the firewall rules to be atmomically applied in another container.
-  # It also resolves the IP addresses of the VPN provider into an allow-list,
+  # Generates the firewall rules to be atomically applied in another container.
+  # It also resolves the IP addresses of  the VPN provider into an allow-list,
   # so that the firewall would not block it on the default `eth` interface.
   # See the notes in `generate-firewall.sh` on why this needs to be isolated.
   # If stopped, the dump files are not generated, so they will not be applied.
@@ -146,7 +146,8 @@ services:
       IPTABLES_FILE_V6: /iptables/iptables-v6.txt
       ALLOWED_IPS_FILE: /cache/all.txt
       ALLOWED_IPS_DIR: /cache
-      LOCAL_IPS: 192.168.1.0/24
+      LOCAL_IPS: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8
+      STATUS_IP: 139.130.4.5
       NS: 8.8.4.4
     volumes:
       - ./cache:/cache
