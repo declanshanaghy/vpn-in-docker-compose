@@ -107,9 +107,9 @@ services:
       - bash
       - -c
       - |
-        /apply-firewall.sh initial
         echo ip route add 192.168.1.0/24 dev eth0
         ip route add 192.168.1.0/24 dev eth0
+        /apply-firewall.sh initial
         while true; do
           /apply-firewall.sh
           sleep 1s
