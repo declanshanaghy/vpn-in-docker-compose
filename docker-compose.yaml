@@ -91,7 +91,7 @@ services:
     command: ["openvpn", "--config", "client.conf"]
     volumes:
       - ./openvpn:/etc/openvpn:ro
-    working_dir: /etc/openvpn/airvpn
+    working_dir: /etc/openvpn/${HOST}
     devices: [/dev/net/tun]
     cap_add: [NET_ADMIN]
     restart: unless-stopped
