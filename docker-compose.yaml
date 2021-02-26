@@ -107,8 +107,6 @@ services:
       - bash
       - -c
       - |
-        echo ip route add 192.168.1.0/24 dev eth0
-        ip route add 192.168.1.0/24 dev eth0
         /apply-firewall.sh initial
         while true; do
           /apply-firewall.sh
@@ -147,7 +145,7 @@ services:
       IPTABLES_FILE_V6: /iptables/iptables-v6.txt
       ALLOWED_IPS_FILE: /cache/all.txt
       ALLOWED_IPS_DIR: /cache
-      LOCAL_IPS: 192.168.1.0/24
+      LOCAL_IPS: ${LOCAL_IPS}
       STATUS_IP: 139.130.4.5
       NS: 8.8.4.4
     volumes:
