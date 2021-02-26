@@ -146,8 +146,7 @@ services:
       IPTABLES_FILE_V6: /iptables/iptables-v6.txt
       ALLOWED_IPS_FILE: /cache/all.txt
       ALLOWED_IPS_DIR: /cache
-      LOCAL_IPS: 172.30.172.0/24
-      STATUS_IP: 139.130.4.5
+      LOCAL_IPS: 192.168.1.0/24
       NS: 8.8.4.4
     volumes:
       - ./cache:/cache
