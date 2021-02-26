@@ -4,3 +4,4 @@
 !/transmission-state/settings.json
 *.env
 *.ovpn
+.idea
