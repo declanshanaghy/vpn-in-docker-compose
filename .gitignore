@@ -2,3 +2,5 @@
 /transmission-files/
 /transmission-state/
 !/transmission-state/settings.json
+*.env
+*.ovpn

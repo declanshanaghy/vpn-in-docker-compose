@@ -3,13 +3,12 @@ version: "3"
 networks:
   # A non-default network is needed to control the IP address ranges (used in
   # some configs), and to avoid affecting other containers in the same Docker.
-  vpn-network:
+  protected:
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: "172.30.172.0/24"
-    enable_ipv6: false
 
 services:
 
@@ -18,23 +17,23 @@ services:
   # for the first time on creation, or pre-existing block-rules on restarts).
   # There can any amount of apps configured in the same setup: 0, 1, 2, so on.
   # If stopped, nothing will happen - the VPN remains available for other apps.
-  transmission:
-    build: .
-    entrypoint: [/app/wait-for-safety.sh]
-    command: [/app/transmission.sh]
-    environment:
-      LOCAL_IPS: 172.30.172.*
-      PEER_PORT: 46112  # as (and if) configured in the VPN provider
-    volumes:
-      - ./:/app
-      - ./transmission-state:/var/lib/transmission
-      - ./transmission-files:/mnt/files
-      - ~/Downloads:/mnt/downloads
-      - ~/Movies:/mnt/movies
-    cap_add: [NET_ADMIN]  # needed for the `wait-for-safety.sh` script
-    restart: unless-stopped
-    stop_signal: SIGTERM
-    network_mode: service:network  # CRITICALLY IMPORTANT!
+  #transmission:
+  #  build: .
+  #  entrypoint: [/app/wait-for-safety.sh]
+  #  command: [/app/transmission.sh]
+  #  environment:
+  #    LOCAL_IPS: 172.30.172.*
+  #    PEER_PORT: 46112  # as (and if) configured in the VPN provider
+  #  volumes:
+  #    - ./:/app
+  #    - ./transmission-state:/var/lib/transmission
+  #    - ./transmission-files:/mnt/files
+  #    - ~/Downloads:/mnt/downloads
+  #    - ~/Movies:/mnt/movies
+  #  cap_add: [NET_ADMIN]  # needed for the `wait-for-safety.sh` script
+  #  restart: unless-stopped
+  #  stop_signal: SIGTERM
+  #  network_mode: service:network  # CRITICALLY IMPORTANT!
 
   # A shared container that is used as a network. It does nothing but sleeps.
   # Native Docker's networks cannot share the iptables rules cross containers.
@@ -48,9 +47,14 @@ services:
     restart: always
     dns: [8.8.4.4]
     ports:
-      - "127.0.0.1:9091:9091"  # application's ports
+      - "9101:9101"  # Stockwatcher chromedriver debugging
+      - "9102:9102"  # Stockwatcher chromedriver debugging
+      - "9103:9103"  # Stockwatcher chromedriver debugging
+      - "9104:9104"  # Stockwatcher chromedriver debugging
+      - "9143:443"   # Nginx TLS test port
+      - "9180:80"    # Nginx test port
     networks:
-      - vpn-network
+      - protected
 
   # Evaluates the status of the setup, and prints a colorful message about that.
   # It also generates an HTML file that is later served by the web-view server.
@@ -68,7 +72,7 @@ services:
         done
     environment:
       NS: 8.8.4.4
-      TZ: Europe/Berlin
+      TZ: America/Los_Angeles
       STATUS_DIR: /status
     env_file:
       - ipstack.env
@@ -162,7 +166,7 @@ services:
   # Note: it is not a part of the firewalled network, as there is no need
   # for utilities to be firewalled. And so, it can have its own ports exposed.
   # TODO: Is there a proper "Docker way" to run nginx in the "status" container?
-  webview:
+  status-viewer:
     image: nginx
     volumes:
     - ./nginx-no-access-log.conf:/etc/nginx/conf.d/nginx-no-access-log.conf:ro
@@ -170,7 +174,7 @@ services:
     restart: unless-stopped
     stop_signal: SIGTERM
     ports:
-      - "127.0.0.1:9090:80"
+      - "9100:80"
 
 volumes:
   iptables:
