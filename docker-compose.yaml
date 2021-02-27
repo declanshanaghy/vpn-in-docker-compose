@@ -52,7 +52,7 @@ services:
       - "9103:9103"    # Stockwatcher chromedriver debugging
       - "9104:9104"    # Stockwatcher chromedriver debugging
       - "9180:80"           # Nginx test port
-      - "127.0.0.1::29379"  # AirVPN forwarding for MQTT
+      - "29379:29379"  # AirVPN forwarding for MQTT
     networks:
       - protected
 
@@ -180,6 +180,7 @@ services:
 
   mqtt_proxy:
     image: tecnativa/tcp-proxy
+    restart: unless-stopped
     environment:
       LISTEN: ":29379"
       TALK: "192.168.1.237:1883"
