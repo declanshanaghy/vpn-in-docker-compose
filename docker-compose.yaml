@@ -23,11 +23,13 @@ services:
     restart: always
     dns: [8.8.4.4]
     ports:
-      - "9101:9101"    # Stockwatcher chromedriver debugging
-      - "9102:9102"    # Stockwatcher chromedriver debugging
-      - "9103:9103"    # Stockwatcher chromedriver debugging
-      - "9104:9104"    # Stockwatcher chromedriver debugging
-      - "9180:80"           # Nginx test port
+      - "3805:3805"    # StockWatcher chromedriver debugging
+      - "3807:3807"
+      - "3808:3808"
+      - "3809:3809"
+      - "3810:3810"
+      - "3811:3811"
+      - "3812:3812"
       - "29379:29379"  # AirVPN forwarding for MQTT
     networks:
       - protected
