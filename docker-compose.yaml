@@ -56,6 +56,14 @@ services:
     networks:
       - protected
 
+  mqtt_proxy:
+    image: tecnativa/tcp-proxy
+    restart: unless-stopped
+    environment:
+      LISTEN: ":29379"
+      TALK: "192.168.1.237:1883"
+    network_mode: service:network  # CRITICALLY IMPORTANT!
+
   # Evaluates the status of the setup, and prints a colorful message about that.
   # It also generates an HTML file that is later served by the web-view server.
   # If stopped, the status is not checked and not updated, the old one is shown.
@@ -108,6 +116,8 @@ services:
       - bash
       - -c
       - |
+        echo ip route add ${LOCAL_IPS} dev eth0
+        ip route add ${LOCAL_IPS} dev eth0
         /apply-firewall.sh initial
         while true; do
           /apply-firewall.sh
@@ -116,6 +126,7 @@ services:
     environment:
       IPTABLES_FILE_V4: /iptables/iptables-v4.txt
       IPTABLES_FILE_V6: /iptables/iptables-v6.txt
+      LOCAL_IPS: ${LOCAL_IPS}
     volumes:
       - ./apply-firewall.sh:/apply-firewall.sh:ro
       - iptables:/iptables:ro
@@ -135,8 +146,6 @@ services:
       - bash
       - -c
       - |
-        echo ip route add ${LOCAL_IPS} dev eth0
-        ip route add ${LOCAL_IPS} dev eth0
         /generate-firewall.sh initial  # silent insta-block!
         while true; do
           /update-airvpn-ips.sh
@@ -177,14 +186,6 @@ services:
     stop_signal: SIGTERM
     ports:
       - "9100:80"
-
-  mqtt_proxy:
-    image: tecnativa/tcp-proxy
-    restart: unless-stopped
-    environment:
-      LISTEN: ":29379"
-      TALK: "192.168.1.237:1883"
-    network_mode: service:network  # CRITICALLY IMPORTANT!
 
 volumes:
   iptables:
