@@ -135,6 +135,8 @@ services:
       - bash
       - -c
       - |
+        echo ip route add ${LOCAL_IPS} dev eth0
+        ip route add ${LOCAL_IPS} dev eth0
         /generate-firewall.sh initial  # silent insta-block!
         while true; do
           /update-airvpn-ips.sh
