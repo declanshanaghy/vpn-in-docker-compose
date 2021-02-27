@@ -47,11 +47,12 @@ services:
     restart: always
     dns: [8.8.4.4]
     ports:
-      - "9101:9101"  # Stockwatcher chromedriver debugging
-      - "9102:9102"  # Stockwatcher chromedriver debugging
-      - "9103:9103"  # Stockwatcher chromedriver debugging
-      - "9104:9104"  # Stockwatcher chromedriver debugging
-      - "9180:80"    # Nginx test port
+      - "9101:9101"    # Stockwatcher chromedriver debugging
+      - "9102:9102"    # Stockwatcher chromedriver debugging
+      - "9103:9103"    # Stockwatcher chromedriver debugging
+      - "9104:9104"    # Stockwatcher chromedriver debugging
+      - "9180:80"           # Nginx test port
+      - "127.0.0.1::29379"  # AirVPN forwarding for MQTT
     networks:
       - protected
 
@@ -134,6 +135,8 @@ services:
       - bash
       - -c
       - |
+        echo ip route add ${LOCAL_IPS} dev eth0
+        ip route add ${LOCAL_IPS} dev eth0
         /generate-firewall.sh initial  # silent insta-block!
         while true; do
           /update-airvpn-ips.sh
@@ -174,6 +177,13 @@ services:
     stop_signal: SIGTERM
     ports:
       - "9100:80"
+
+  mqtt_proxy:
+    image: tecnativa/tcp-proxy
+    environment:
+      LISTEN: ":29379"
+      TALK: "192.168.1.237:1883"
+    network_mode: service:network  # CRITICALLY IMPORTANT!
 
 volumes:
   iptables:
