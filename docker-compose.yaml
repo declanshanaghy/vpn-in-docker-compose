@@ -79,7 +79,7 @@ services:
     command: ["openvpn", "--config", "client.conf"]
     volumes:
       - ./openvpn:/etc/openvpn:ro
-    working_dir: /etc/openvpn/${HOST}
+    working_dir: /etc/openvpn/${HOSTNAME}
     devices: [/dev/net/tun]
     cap_add: [NET_ADMIN]
     restart: unless-stopped
