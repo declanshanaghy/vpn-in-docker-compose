@@ -11,30 +11,6 @@ networks:
         - subnet: "172.30.172.0/24"
 
 services:
-
-  # A sample application that runs securely only through the VPN, not directly.
-  # It will not actually start until the firewall rules are applied (either
-  # for the first time on creation, or pre-existing block-rules on restarts).
-  # There can any amount of apps configured in the same setup: 0, 1, 2, so on.
-  # If stopped, nothing will happen - the VPN remains available for other apps.
-  #transmission:
-  #  build: .
-  #  entrypoint: [/app/wait-for-safety.sh]
-  #  command: [/app/transmission.sh]
-  #  environment:
-  #    LOCAL_IPS: 172.30.172.*
-  #    PEER_PORT: 46112  # as (and if) configured in the VPN provider
-  #  volumes:
-  #    - ./:/app
-  #    - ./transmission-state:/var/lib/transmission
-  #    - ./transmission-files:/mnt/files
-  #    - ~/Downloads:/mnt/downloads
-  #    - ~/Movies:/mnt/movies
-  #  cap_add: [NET_ADMIN]  # needed for the `wait-for-safety.sh` script
-  #  restart: unless-stopped
-  #  stop_signal: SIGTERM
-  #  network_mode: service:network  # CRITICALLY IMPORTANT!
-
   # A shared container that is used as a network. It does nothing but sleeps.
   # Native Docker's networks cannot share the iptables rules cross containers.
   # The ports of all containers are shared here, as the network-bound containers
